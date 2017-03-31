@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView;
     private EditText myEditTextHz, myEditTextIP;
 
-    private double sampleRate = 48000.0;
+    private float sampleRate = 48000.0f;
     private int startTimeIndex = 0;
     private int N = (int)(sampleRate*0.04); // Each frame have this many samples
     private int NFrameTimer,NFrameSocket;
@@ -59,9 +59,9 @@ public class MainActivity extends AppCompatActivity {
     final Handler handler = new Handler();
 
     private byte[] buffer = new byte[N*2];
-    private double[] piftIndex = new double[N];
-    private double[] pIndex = new double[N];
-    private double step = 0; //Frequency*N/sampleRate*Math.PI*2;
+    private float[] piftIndex = new float[N];
+    private float[] pIndex = new float[N];
+    private float step = 0; //Frequency*N/sampleRate*Math.PI*2;
     private short[] shortBuffer = new short[N];
 
     private short[] shortBufferPlay1 = new short[N];
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         for(int i=0;i<N;i++){
-            piftIndex[i] = Frequency*(i+1)/sampleRate*Math.PI*2;
+            piftIndex[i] = Frequency*(i+1)/sampleRate*((float) Math.PI)*2;
         }
         Thread udpSendThread = new Thread(new Runnable() {
             @Override
@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
                                 FreqencyVaryFlag = false;
                                 step = 0; // piftIndex[N-1]; // x in sin(x) for the last element in the previous frame
                                 for(int i=0;i<N;i++){
-                                    piftIndex[i] = Frequency*(i+1)/sampleRate*Math.PI*2;
+                                    piftIndex[i] = Frequency*(i+1)/sampleRate*((float) Math.PI)*2;
                                 }
                                 Toast.makeText(getApplicationContext(), "The frequency is: " + Float.toString(Frequency), Toast.LENGTH_LONG).show();
                             } else {
@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
                                 for (int i = 0; i < N; i++) {
-                                    piftIndex[i] = Frequency * (i + 1) / sampleRate * Math.PI * 2;
+                                    piftIndex[i] = (float) Frequency * (i + 1) / sampleRate * ((float) Math.PI) * 2;
                                 }
 
                             }
@@ -253,6 +253,9 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             step = pIndex[N-1]; // the last element :)
+                            if ( step> (float) (1000000*2*Math.PI) ){
+                                step -= (float) (1000000*2*Math.PI);
+                            }
 
 
                             if (playFlag==1) {
